@@ -16,7 +16,7 @@ setTimeout(function () {
  ******************************************/
 
 
-(function theLoop (i) {
+(function theLoop(i) {
 	setTimeout(function () {
 		let blockTest = new Block.Block("Test Block - " + (i + 1));
 		// Be careful this only will work if your method 'addBlock' in the Blockchain.js file return a Promise
@@ -26,7 +26,7 @@ setTimeout(function () {
 			if (i < 10) theLoop(i);
 		});
 	}, 10000);
-  })(0);
+})(0);
 
 
 /***********************************************
@@ -49,7 +49,7 @@ myBlockChain.getBlockHeight().then((height) => {
 myBlockChain.getBlock(0).then((block) => {
 	console.log(JSON.stringify(block));
 }).catch((err) => { console.log(err);});
-*?
+*/
 
 /***********************************************
  ***************** Validate Block  *************
