@@ -20,10 +20,9 @@ class Blockchain {
   generateGenesisBlock() {
     let self = this;
     return new Promise((resolve, reject) => {
-      if (self.bd.height == 0) {
+      if (self.bd.getBlocksCount() == 0) {
         resolve(new Block.Block("First block in the chain - Genesis block"))
       }
-      resolve(new Block.Block("First block in the chain - Genesis block"))
     }).catch((err) => { console.log(err); reject(err) });
   }
 
@@ -40,16 +39,21 @@ class Blockchain {
   addBlock(block) {
     let self = this;
     return new Promise((resolve, reject) => {
-      if (self.bd.length > 0) {
+      if (block.height > 0) {
         // previous block hash
-        block.previousHash = bd[bd.length - 1].hash;
+        block.previousHash = bd.getLevelDBData(self.bd.getBlocksCount() - 1).hash;
+        self.getBlockHeight().then(function (result) {
+          block.height = result + 1;
+        });
       }
       // SHA256 requires a string of data
-      block.height = self.getBlockHeight()
+      self.getBlockHeight().then(function (result) {
+        block.height = result;
+      });
       block.time = new Date().getTime().toString().slice(0, -3)
       block.hash = SHA256(JSON.stringify(block)).toString();
       // add block to chain
-      resolve(block)
+      resolve(self.bd.addLevelDBData(block.height, block))
       //console.log(JSON.stringify(block))
     }).catch((err) => { console.log(err); reject(err) });
   }

@@ -27,17 +27,15 @@ class LevelSandbox {
     // Add data to levelDB with key and value (Promise)
     addLevelDBData(key, value) {
         let self = this;
-        return new Promise(function (resolve, reject) {
-            // Add your code here, remember in Promises you need to resolve() or reject() 
-            let i = 0;
-            db.createReadStream().on('data', function (data) {
-                i++;
-            }).on('error', function (err) {
-                return console.log('Unable to read data stream!', err)
-            }).on('close', function () {
-                console.log('Block #' + i);
-                resolve(addLevelDBData(i, value));
-            });
+        // Add your code here, remember in Promises you need to resolve() or reject() 
+        let i = 0;
+        db.createReadStream().on('data', function (data) {
+            i++;
+        }).on('error', function (err) {
+            return console.log('Unable to read data stream!', err)
+        }).on('close', function () {
+            console.log('Block #' + db.i);
+            return addLevelDBData(self.i, self.value)
         });
     }
 
@@ -50,13 +48,12 @@ class LevelSandbox {
             self.db.createKeyStream()
                 .on('data', function (data) {
                     console.log('key=', data)
-                    count++
+                    count += 1
                 })
             resolve(count)
-        });
+            console.log(`count: ${count}`)
+        })
     }
-
-
 }
 
 module.exports.LevelSandbox = LevelSandbox;
