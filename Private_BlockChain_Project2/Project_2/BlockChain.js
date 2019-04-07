@@ -32,8 +32,7 @@ class Blockchain {
     let self = this;
     // block height
     return new Promise((resolve, reject) => {
-      self.height = self.bd.getBlocksCount();
-      resolve(self.height)
+      resolve(self.bd.getBlocksCount())
     }).catch((err) => { console.log(err); reject(err) });
   }
 
@@ -43,15 +42,15 @@ class Blockchain {
     return new Promise((resolve, reject) => {
       if (self.bd.length > 0) {
         // previous block hash
-        self.block.previousHash = bd[bd.length - 1].hash;
+        block.previousHash = bd[bd.length - 1].hash;
       }
       // SHA256 requires a string of data
-      self.block.height = getBlockHeight()
-      self.block.time = new Date().getTime().toString().slice(0, -3)
-      self.block.hash = SHA256(JSON.stringify(block)).toString();
+      block.height = self.getBlockHeight()
+      block.time = new Date().getTime().toString().slice(0, -3)
+      block.hash = SHA256(JSON.stringify(block)).toString();
       // add block to chain
-      resolve(self.block)
-      console.log(JSON.stringify(self.block))
+      resolve(block)
+      //console.log(JSON.stringify(block))
     }).catch((err) => { console.log(err); reject(err) });
   }
 
