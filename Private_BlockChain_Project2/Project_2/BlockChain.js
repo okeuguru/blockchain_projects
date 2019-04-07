@@ -32,8 +32,8 @@ class Blockchain {
     let self = this;
     // block height
     return new Promise((resolve, reject) => {
-      self.bd.height = self.bd.getBlocksCount();
-      resolve(self.bd.height)
+      self.height = self.bd.getBlocksCount();
+      resolve(self.height)
     }).catch((err) => { console.log(err); reject(err) });
   }
 
