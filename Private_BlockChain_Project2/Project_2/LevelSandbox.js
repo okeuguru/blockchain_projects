@@ -44,9 +44,22 @@ class LevelSandbox {
             });
         });
     }
+
+    // Add data to levelDB with value
+    addDataToLevelDB(value) {
+        let i = 0;
+        db.createReadStream().on('data', function (data) {
+            i++;
+        }).on('error', function (err) {
+            return console.log('Unable to read data stream!', err)
+        }).on('close', function () {
+            console.log('Block #' + i);
+            addLevelDBData(i, value);
+        });
+    }
     /**
- * Step 2. Implement the getBlocksCount() method
- */
+    * Step 2. Implement the getBlocksCount() method
+    */
     getBlocksCount() {
         let self = this;
         // Add your code here
