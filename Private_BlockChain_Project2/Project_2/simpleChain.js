@@ -36,7 +36,6 @@ setTimeout(function () {
 
 // Be careful this only will work if `getBlockHeight` method in Blockchain.js file return a Promise
 myBlockChain.getBlockHeight().then((height) => {
-	console.log(height);
 }).catch((err) => { console.log(err); });
 
 

@@ -44,16 +44,19 @@ class LevelSandbox {
             });
         });
     }
-
     /**
  * Step 2. Implement the getBlocksCount() method
  */
     getBlocksCount() {
         let self = this;
         // Add your code here
-
+        self.db.get('height', function (err, value) {
+            if (err) {
+                return err;
+            }
+            return (value)
+        });
     }
 }
-
 // Export the class
 module.exports.LevelSandbox = LevelSandbox;
