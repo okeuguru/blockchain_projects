@@ -33,9 +33,9 @@ class LevelSandbox {
 
     // Add data to levelDB with key and value (Promise)
     addLevelDBData(key, value) {
-        let self = this;
+        let self = this.db;
         return new Promise(function (resolve, reject) {
-            self.db.put(key, value, function (err) {
+            self.put(key, value, function (err) {
                 if (err) {
                     console.log('Block ' + key + ' submission failed', err);
                     reject(err);
@@ -47,23 +47,28 @@ class LevelSandbox {
 
     // Add data to levelDB with value
     addDataToLevelDB(value) {
+        let self = this.db;
         let i = 0;
-        db.createReadStream().on('data', function (data) {
-            i++;
-        }).on('error', function (err) {
-            return console.log('Unable to read data stream!', err)
-        }).on('close', function () {
-            console.log('Block #' + i);
-            addLevelDBData(i, value);
+        return new Promise(function (resolve, reject) {
+            self.createReadStream().on('data', function (data) {
+                i++;
+            }).on('error', function (err) {
+                return console.log('Unable to read data stream!', err)
+            }).on('close', function () {
+                console.log('Block #' + i);
+                self.addLevelDBData(i, value).then((result) => {
+                    return result
+                });
+            });
         });
     }
     /**
     * Step 2. Implement the getBlocksCount() method
     */
     getBlocksCount() {
-        let self = this;
+        let self = this.db;
         // Add your code here
-        self.db.get('height', function (err, value) {
+        self.get('height', function (err, value) {
             if (err) {
                 return err;
             }

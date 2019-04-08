@@ -39,7 +39,7 @@ class Blockchain {
     return new Promise((resolve, reject) => {
       if (parseInt(self.bd.getLevelDBData('height')) !== 0) {
         self.generateGenesisBlock().then((result => {
-          resolve(block)
+          return result
         })).catch((err) => { console.log(err); reject(err) });
         block.previousBlockHash = ''
       }
@@ -54,7 +54,7 @@ class Blockchain {
       block.time = new Date().getTime().toString().slice(0, -3)
       block.hash = SHA256(JSON.stringify(block)).toString();
       // add block to chain
-      self.bd.addLevelDBData(block.height, block).then((block) => {
+      self.bd.addDataToLevelDB(block).then((block) => {
         resolve(block)
       })
     }).catch((err) => { console.log(err); reject(err) });
