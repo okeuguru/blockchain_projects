@@ -37,26 +37,21 @@ class Blockchain {
   addBlock(block) {
     let self = this;
     return new Promise((resolve, reject) => {
-      if (parseInt(self.bd.getLevelDBData('height')) !== 0) {
-        self.generateGenesisBlock().then((result => {
-          return result
-        })).catch((err) => { console.log(err); reject(err) });
-        block.previousBlockHash = ''
-      }
-      // previous block hash
-      block.previousBlockHash = self.bd.getLevelDBData(self.bd.getBlocksCount() - 1).hash;
 
       // SHA256 requires a string of data
-      self.getBlockHeight().then(function (result) {
-        block.height = parseInt(result) + 1;
+      self.getBlockHeight().then((result) => {
+        block.height = result
       });
 
       block.time = new Date().getTime().toString().slice(0, -3)
       block.hash = SHA256(JSON.stringify(block)).toString();
+      // previous block hash
+      block.previousBlockHash = self.bd.getLevelDBData(block.height - 1).hash;
       // add block to chain
       self.bd.addDataToLevelDB(block).then((block) => {
         resolve(block)
       })
+
     }).catch((err) => { console.log(err); reject(err) });
   }
   // Get Block By Height
