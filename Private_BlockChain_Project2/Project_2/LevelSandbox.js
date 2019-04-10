@@ -14,9 +14,9 @@ class LevelSandbox {
 
     // Get data from levelDB with key (Promise)
     getLevelDBData(key) {
-        let self = this; // because we are returning a promise we will need this to be able to reference 'this' inside the Promise constructor
+        let self = this.db; // because we are returning a promise we will need this to be able to reference 'this' inside the Promise constructor
         return new Promise(function (resolve, reject) {
-            self.db.get(key, (err, value) => {
+            self.get(key, (err, value) => {
                 if (err) {
                     if (err.type == 'NotFoundError') {
                         resolve(undefined);

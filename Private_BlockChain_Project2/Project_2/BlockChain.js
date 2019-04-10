@@ -36,20 +36,26 @@ class Blockchain {
   // Add new block
   addBlock(block) {
     let self = this;
+    let self2 = this.bd
+    let levelDBData
     return new Promise((resolve, reject) => {
 
       // SHA256 requires a string of data
       self.getBlockHeight().then((result) => {
         block.height = result
-      });
 
-      block.time = new Date().getTime().toString().slice(0, -3)
-      block.hash = SHA256(JSON.stringify(block)).toString();
-      // previous block hash
-      block.previousBlockHash = self.bd.getLevelDBData(block.height - 1).hash;
-      // add block to chain
-      self.bd.addDataToLevelDB(block).then((block) => {
-        resolve(block)
+        // previous block hash
+        self2.getLevelDBData(block.height - 1).then((ldb) => {
+          block.previousBlockHash = ldb.hash
+
+          block.time = new Date().getTime().toString().slice(0, -3)
+          block.hash = SHA256(JSON.stringify(block)).toString();
+
+          // add block to chain
+          self.bd.addDataToLevelDB(block).then((block) => {
+            resolve(block)
+          })
+        })
       })
 
     }).catch((err) => { console.log(err); reject(err) });
