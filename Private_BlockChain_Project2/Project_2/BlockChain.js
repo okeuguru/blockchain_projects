@@ -18,15 +18,25 @@ class Blockchain {
   // you will need to set this up statically or instead you can verify if the height !== 0 then you
   // will not create the genesis block
   generateGenesisBlock() {
-    let self = this.bd;
+    let self = this;
+    let self2 = this.bd;
+    let block
+
     return new Promise((resolve, reject) => {
-      let block
+
       block = new Block.Block("First block in the chain - Genesis block")
       block.time = new Date().getTime().toString().slice(0, -3)
       block.hash = SHA256(JSON.stringify(block)).toString();
-      console.log(`Adding the Genesis Block: ${JSON.stringify(block, null, 2)}`)
-      self.addDataToLevelDB(block).then((result) => {
-        resolve(result)
+
+      self.getBlockHeight().then((result) => {
+        block.height = result
+
+        if (block.height < 1) {
+          //console.log(`Adding the Genesis Block: ${JSON.stringify(block, null, 2)}`)
+          self2.addDataToLevelDB(block).then((result) => {
+            resolve(result)
+          })
+        }
       })
     }).catch((err) => { console.log(err); reject(err) });
   }
@@ -56,8 +66,9 @@ class Blockchain {
         if (block.height > 0) {
 
           // previous block hash
-          self.getBlock(block.height - 1).then((res) => {
-            console.log(`This is prevBlock ${JSON.stringify(res)} for block: ${block.height - 1} `)
+          self.getBlock((block.height - 1)).then((res) => {
+            resolve(res)
+            console.log(`PrevBlock ${JSON.stringify(prevBlock)} for block: ${block.height - 1} `)
           })
           block.time = new Date().getTime().toString().slice(0, -3)
           block.hash = SHA256(JSON.stringify(block)).toString();
@@ -67,15 +78,15 @@ class Blockchain {
           })
         }
       })
-
-
     }).catch((err) => { console.log(err); reject(err) });
   }
   // Get Block By Height
   getBlock(height) {
     let self = this.bd;
     return new Promise((resolve, reject) => {
-      resolve(self.getLevelDBData(height))
+      self.getLevelDBData(height).then((result) => {
+        resolve(result)
+      })
     }).catch((err) => { console.log(err); reject(err) });
   }
 
