@@ -67,16 +67,17 @@ class Blockchain {
           block.time = new Date().getTime().toString().slice(0, -3)
           block.hash = SHA256(JSON.stringify(block)).toString();
 
-          // add block to chain
-          self2.addDataToLevelDB(block).then((block) => {
-            resolve(block)
-          })
-
           // previous block hash
-          self.getBlock(block.height - 1).then((res) => {
-            block.previousBlockHash = res
+          let height = block.height - 1
+          self.getBlock(height).then((res) => {
+            block.previousBlockHash = res.hash
+            // add block to chain
+            self2.addDataToLevelDB(JSON.stringify(block)).then((block) => {
+              resolve(block)
+            })
 
           }).catch((err) => { console.log(err); });
+
         }
       })
     }).catch((err) => { console.log(err); reject(err) });
@@ -86,7 +87,7 @@ class Blockchain {
     let self = this.bd;
     return new Promise((resolve, reject) => {
       self.getLevelDBData(height).then((result) => {
-        resolve(result)
+        resolve(JSON.parse(result))
       })
     }).catch((err) => { console.log(err); reject(err) });
   }
