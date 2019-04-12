@@ -32,8 +32,7 @@ class Blockchain {
         block.height = result
 
         if (block.height < 1) {
-          //console.log(`Adding the Genesis Block: ${JSON.stringify(block, null, 2)}`)
-          self2.addDataToLevelDB(block).then((result) => {
+          self2.addDataToLevelDB(JSON.stringify(block)).then((result) => {
             resolve(result)
           })
         }
@@ -68,14 +67,13 @@ class Blockchain {
           block.hash = SHA256(JSON.stringify(block)).toString();
 
           // previous block hash
-          let height = block.height - 1
-          self.getBlock(height).then((res) => {
+          self.getBlock(block.height - 1).then((res) => {
             block.previousBlockHash = res.hash
+
             // add block to chain
             self2.addDataToLevelDB(JSON.stringify(block)).then((block) => {
               resolve(block)
             })
-
           }).catch((err) => { console.log(err); });
 
         }
@@ -88,7 +86,7 @@ class Blockchain {
     return new Promise((resolve, reject) => {
       self.getLevelDBData(height).then((result) => {
         resolve(JSON.parse(result))
-      })
+      }).catch((err) => { console.log(err); reject(err) });
     }).catch((err) => { console.log(err); reject(err) });
   }
 
