@@ -26,10 +26,10 @@ class LevelSandbox {
                         reject(err);
                     }
                 } else {
-                    resolve(value);
+                    resolve(JSON.parse(value));
                 }
             });
-        });
+        }).catch((err) => { console.log(err); reject(err) });
     }
 
     // Add data to levelDB with key and value (Promise)
@@ -43,7 +43,7 @@ class LevelSandbox {
                 }
                 resolve(value);
             });
-        });
+        }).catch((err) => { console.log(err); reject(err) });
     }
 
     // Add data to levelDB with value
@@ -62,7 +62,7 @@ class LevelSandbox {
                     resolve(result)
                 });
             });
-        });
+        }).catch((err) => { console.log(err); reject(err) });
     }
     /**
     * Step 2. Implement the getBlocksCount() method
@@ -79,7 +79,7 @@ class LevelSandbox {
             }).on('close', function () {
                 resolve(i)
             })
-        });
+        }).catch((err) => { console.log(err); reject(err) });
     }
 }
 // Export the class

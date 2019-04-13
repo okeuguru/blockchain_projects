@@ -15,13 +15,12 @@ setTimeout(function () {
  ** Function for Create Tests Blocks   ****
  ******************************************/
 
-
 (function theLoop(i) {
 	setTimeout(function () {
 		let blockTest = new Block.Block("Test Block - " + (i + 1));
 		// Be careful this only will work if your method 'addBlock' in the Blockchain.js file return a Promise
 		myBlockChain.addBlock(blockTest).then((result) => {
-			console.log(result);
+			console.log(JSON.parse(result));
 			i++;
 			if (i < 10) theLoop(i);
 		});
@@ -43,26 +42,26 @@ myBlockChain.getBlockHeight().then((height) => {
  ******** Function to Get a Block  *************
  ***********************************************/
 
-/*
+
 // Be careful this only will work if `getBlock` method in Blockchain.js file return a Promise
 myBlockChain.getBlock(0).then((block) => {
 	console.log(JSON.stringify(block));
-}).catch((err) => { console.log(err);});
-*/
+}).catch((err) => { console.log(err); reject(err) });
+
 
 /***********************************************
  ***************** Validate Block  *************
  ***********************************************/
 
-/*
+
 // Be careful this only will work if `validateBlock` method in Blockchain.js file return a Promise
 myBlockChain.validateBlock(0).then((valid) => {
 	console.log(valid);
 })
-.catch((error) => {
-	console.log(error);
-})
-*/
+	.catch((error) => {
+		console.log(error);
+	})
+
 
 /** Tampering a Block this is only for the purpose of testing the validation methods */
 /*
@@ -70,30 +69,30 @@ myBlockChain.getBlock(5).then((block) => {
 	let blockAux = block;
 	blockAux.body = "Tampered Block";
 	myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
-		if(blockModified){
+		if (blockModified) {
 			myBlockChain.validateBlock(blockAux.height).then((valid) => {
 				console.log(`Block #${blockAux.height}, is valid? = ${valid}`);
 			})
-			.catch((error) => {
-				console.log(error);
-			})
+				.catch((error) => {
+					console.log(error);
+				})
 		} else {
 			console.log("The Block wasn't modified");
 		}
-	}).catch((err) => { console.log(err);});
-}).catch((err) => { console.log(err);});
+	}).catch((err) => { console.log(err); });
+}).catch((err) => { console.log(err); });
 
 myBlockChain.getBlock(6).then((block) => {
 	let blockAux = block;
 	blockAux.previousBlockHash = "jndininuud94j9i3j49dij9ijij39idj9oi";
 	myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
-		if(blockModified){
+		if (blockModified) {
 			console.log("The Block was modified");
 		} else {
 			console.log("The Block wasn't modified");
 		}
-	}).catch((err) => { console.log(err);});
-}).catch((err) => { console.log(err);});
+	}).catch((err) => { console.log(err); });
+}).catch((err) => { console.log(err); });
 
 /***********************************************
  ***************** Validate Chain  *************

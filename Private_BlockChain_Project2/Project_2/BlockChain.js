@@ -33,6 +33,7 @@ class Blockchain {
 
         if (block.height < 1) {
           self2.addDataToLevelDB(JSON.stringify(block)).then((result) => {
+            console.log(JSON.parse(result))
             resolve(result)
           })
         }
@@ -74,8 +75,7 @@ class Blockchain {
             self2.addDataToLevelDB(JSON.stringify(block)).then((block) => {
               resolve(block)
             })
-          }).catch((err) => { console.log(err); });
-
+          })
         }
       })
     }).catch((err) => { console.log(err); reject(err) });
@@ -85,30 +85,39 @@ class Blockchain {
     let self = this.bd;
     return new Promise((resolve, reject) => {
       self.getLevelDBData(height).then((result) => {
-        resolve(JSON.parse(result))
-      }).catch((err) => { console.log(err); reject(err) });
+        resolve(result)
+      })
     }).catch((err) => { console.log(err); reject(err) });
   }
 
   // Validate if Block is being tampered by Block Height
   validateBlock(height) {
     let self = this;
+    let validBlock
     return new Promise((resolve, reject) => {
+
       // get block object
-      let block = getBlock(height);
-      // get block hash
-      let blockHash = self.block.hash;
-      // remove block hash to test block integrity
-      block.hash = '';
-      // generate block hash
-      let validBlockHash = SHA256(JSON.stringify(block)).toString();
-      // Compare
-      if (blockHash === validBlockHash) {
-        resolve(true)
-      } else {
-        console.log('Block #' + blockHeight + ' invalid hash:\n' + blockHash + '<>' + validBlockHash);
-        resolve(false)
-      }
+      self.getBlock(height).then((result => {
+        validBlock = result
+        let blockHeight = validBlock.height
+
+        // get block hash
+        let blockHash = validBlock.hash;
+
+        // remove block hash to test block integrity
+        validBlock.hash = '';
+
+        // generate block hash
+        let validBlockHash = SHA256(JSON.stringify(validBlock)).toString();
+
+        // Compare
+        if (blockHash === validBlockHash) {
+          resolve(true)
+        } else {
+          console.log('Block #' + blockHeight + ' invalid hash:\n' + blockHash + '<>' + validBlockHash);
+          resolve(false)
+        }
+      }))
     }).catch((err) => { console.log(err); reject(err) });
   }
 
@@ -143,8 +152,8 @@ class Blockchain {
     return new Promise((resolve, reject) => {
       self.bd.addLevelDBData(height, JSON.stringify(block).toString()).then((blockModified) => {
         resolve(blockModified);
-      }).catch((err) => { console.log(err); reject(err) });
-    });
+      })
+    }).catch((err) => { console.log(err); reject(err) });
   }
 }
 
