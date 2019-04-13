@@ -33,7 +33,7 @@ class Blockchain {
 
         if (block.height < 1) {
           self2.addDataToLevelDB(JSON.stringify(block)).then((result) => {
-            console.log(JSON.parse(result))
+            //console.log(JSON.parse(result))
             resolve(result)
           })
         }
