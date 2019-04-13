@@ -62,7 +62,6 @@ myBlockChain.validateBlock(0).then((valid) => {
 		console.log(error);
 	})
 
-
 /** Tampering a Block this is only for the purpose of testing the validation methods */
 /*
 myBlockChain.getBlock(5).then((block) => {

@@ -27,16 +27,10 @@ class Blockchain {
       block = new Block.Block("First block in the chain - Genesis block")
       block.time = new Date().getTime().toString().slice(0, -3)
       block.hash = SHA256(JSON.stringify(block)).toString();
-
-      self.getBlockHeight().then((result) => {
-        block.height = result
-
-        if (block.height < 1) {
-          self2.addDataToLevelDB(JSON.stringify(block)).then((result) => {
-            //console.log(JSON.parse(result))
-            resolve(result)
-          })
-        }
+      block.height = 0
+      self2.addDataToLevelDB(JSON.stringify(block)).then((result) => {
+        //console.log(JSON.parse(result))
+        resolve(result)
       })
     }).catch((err) => { console.log(err); reject(err) });
   }
@@ -63,7 +57,7 @@ class Blockchain {
       self.getBlockHeight().then((result) => {
         block.height = result
 
-        if (block.height > 0) {
+        if (block.height >= 0) {
           block.time = new Date().getTime().toString().slice(0, -3)
           block.hash = SHA256(JSON.stringify(block)).toString();
 
@@ -84,7 +78,7 @@ class Blockchain {
   getBlock(height) {
     let self = this.bd;
     return new Promise((resolve, reject) => {
-      self.getLevelDBData(height).then((result) => {
+      self.getLevelDBData(height).then(result => {
         resolve(result)
       })
     }).catch((err) => { console.log(err); reject(err) });
@@ -96,28 +90,34 @@ class Blockchain {
     let validBlock
     return new Promise((resolve, reject) => {
 
-      // get block object
-      self.getBlock(height).then((result => {
-        validBlock = result
-        let blockHeight = validBlock.height
+      self.getBlockHeight().then((result) => {
 
-        // get block hash
-        let blockHash = validBlock.hash;
+        if (result >= 0) {
 
-        // remove block hash to test block integrity
-        validBlock.hash = '';
+          // get block object
+          self.getBlock(height).then((result => {
+            validBlock = result
+            let blockHeight = validBlock.height
 
-        // generate block hash
-        let validBlockHash = SHA256(JSON.stringify(validBlock)).toString();
+            // get block hash
+            let blockHash = validBlock.hash;
 
-        // Compare
-        if (blockHash === validBlockHash) {
-          resolve(true)
-        } else {
-          console.log('Block #' + blockHeight + ' invalid hash:\n' + blockHash + '<>' + validBlockHash);
-          resolve(false)
+            // remove block hash to test block integrity
+            validBlock.hash = '';
+
+            // generate block hash
+            let validBlockHash = SHA256(JSON.stringify(validBlock)).toString();
+
+            // Compare
+            if (blockHash === validBlockHash) {
+              resolve(true)
+            } else {
+              console.log('Block #' + blockHeight + ' invalid hash:\n' + blockHash + '<>' + validBlockHash);
+              resolve(false)
+            }
+          }))
         }
-      }))
+      })
     }).catch((err) => { console.log(err); reject(err) });
   }
 
