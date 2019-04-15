@@ -56,7 +56,6 @@ class Blockchain {
     blockHeight = await self.getBlockHeight()
     block.height = blockHeight
     block.time = new Date().getTime().toString().slice(0, -3)
-    block.hash = SHA256(JSON.stringify(block)).toString();
 
     if (block.height > 0) {
 
@@ -64,9 +63,11 @@ class Blockchain {
       previousBlock = await self.getBlock(block.height - 1)
       block.previousBlockHash = previousBlock.hash
 
+      block.hash = SHA256(JSON.stringify(block)).toString();
+
       // add block to chain
       block2Add = await self2.addDataToLevelDB(JSON.stringify(block))
-      return JSON.stringify(block2Add)
+      return JSON.stringify(block2Add).toString()
     }
   }
 
@@ -79,7 +80,7 @@ class Blockchain {
 
     blockHeight = await self.getBlockHeight()
     block = await self2.getLevelDBData(height)
-    return JSON.parse(block)
+    return block
   }
 
   // Validate if Block is being tampered by Block Height
