@@ -21,12 +21,14 @@ class LevelSandbox {
                 if (err) {
                     if (err.type == 'NotFoundError') {
                         resolve(undefined);
+                        //reject("No data yet")
+                        //console.log("No data yet")
                     } else {
                         console.log('Block ' + key + ' get failed', err);
                         reject(err);
                     }
                 } else {
-                    resolve(JSON.parse(value));
+                    resolve(JSON.parse(JSON.stringify(value)))
                 }
             });
         }).catch((err) => { console.log(err); reject(err) });
@@ -67,7 +69,7 @@ class LevelSandbox {
     /**
     * Step 2. Implement the getBlocksCount() method
     */
-    getBlocksCount() {
+    async getBlocksCount() {
         let i = 0
         let self = this.db;
         // Add your code here
