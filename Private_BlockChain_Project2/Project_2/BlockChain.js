@@ -10,7 +10,13 @@ class Blockchain {
 
   constructor() {
     this.bd = new LevelSandbox.LevelSandbox();
-    this.generateGenesisBlock()
+    this.getBlockHeight().then((height) => {
+      if (height === -1) {
+        this.generateGenesisBlock().then(() => {
+          console.log('Adding Genesis Block...')
+        })
+      }
+    })
   }
 
   // Helper method to create a Genesis Block (always with height= 0)
@@ -24,7 +30,7 @@ class Blockchain {
 
     return new Promise((resolve, reject) => {
 
-      block = new Block.Block("First block in the chain - Genesis block")
+      block = new Block("First block in the chain - Genesis block")
       block.time = new Date().getTime().toString().slice(0, -3)
       block.hash = SHA256(JSON.stringify(block)).toString();
       block.height = 0
@@ -54,7 +60,7 @@ class Blockchain {
 
     // SHA256 requires a string of data
     blockHeight = await self.getBlockHeight()
-    block.height = blockHeight
+    block.height = blockHeight + 1
     block.time = new Date().getTime().toString().slice(0, -3)
 
     if (block.height > 0) {
@@ -119,11 +125,11 @@ class Blockchain {
     let validPrevBlock = ''
 
     self2.getBlockHeight().then((chainLength => {
-      console.log(`This is cl ${parseInt(chainLength) - 1}`)
+      console.log(`This is cl ${parseInt(chainLength)}`)
       return chainLength
     }))
 
-    for (var i = 0; i < chainLength - 1; i++) {
+    for (var i = -1; i < chainLength - 1; i++) {
 
       //validPrevBlock = self2.getBlock(i)
       block = self2.getBlock(i)

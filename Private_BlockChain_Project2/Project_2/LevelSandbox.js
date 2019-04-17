@@ -70,7 +70,7 @@ class LevelSandbox {
   * Step 2. Implement the getBlocksCount() method
   */
   async getBlocksCount() {
-    let i = 0
+    let i = -1
     let self = this.db;
     // Add your code here
     return new Promise(function (resolve, reject) {

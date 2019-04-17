@@ -17,15 +17,15 @@ setTimeout(function () {
 
 (function theLoop(i) {
   setTimeout(function () {
-    let blockTest = new Block.Block("Test Block - " + (i + 1));
+    let blockTest = new Block("Test Block - " + (i + 1));
     // Be careful this only will work if your method 'addBlock' in the Blockchain.js file return a Promise
     myBlockChain.addBlock(blockTest).then((result) => {
       console.log(JSON.parse(result))
       console.log('\n')
       i++;
       if (i < 10) theLoop(i);
-    });
-  }, 1000);
+    }).catch((err) => { console.log(err); reject(err) });
+  }, 1200);
 })(0);
 
 /***********************************************
@@ -34,7 +34,12 @@ setTimeout(function () {
 
 // Be careful this only will work if `getBlockHeight` method in Blockchain.js file return a Promise
 myBlockChain.getBlockHeight().then((height) => {
-  console.log(height);
+  if (height === -1) {
+    console.log(`Empty database:: height=${height}`)
+  } else {
+    console.log(height);
+  }
+
 }).catch((err) => { console.log(err); });
 
 
@@ -47,7 +52,7 @@ setTimeout(function () {
   myBlockChain.getBlock(0).then((block) => {
     console.log(block)
   }).catch((err) => { console.log(err); });
-}, 800)
+}, 700)
 
 /***********************************************
  ***************** Validate Block  *************
@@ -56,12 +61,15 @@ setTimeout(function () {
 
 // Be careful this only will work if `validateBlock` method in Blockchain.js file return a Promise
 
-myBlockChain.validateBlock(0).then((valid) => {
-  console.log(valid);
-})
-  .catch((error) => {
-    console.log(error);
+setTimeout(function () {
+  myBlockChain.validateBlock(0).then((valid) => {
+    console.log(valid);
   })
+    .catch((error) => {
+      console.log(error);
+    })
+}, 800)
+
 
 
 /** Tampering a Block this is only for the purpose of testing the validation methods */
@@ -83,7 +91,7 @@ setTimeout(function () {
       }
     }).catch((err) => { console.log(err); });
   }).catch((err) => { console.log(err); });
-}, 12000)
+}, 15000)
 
 setTimeout(function () {
 
@@ -98,7 +106,7 @@ setTimeout(function () {
       }
     }).catch((err) => { console.log(err); });
   }).catch((err) => { console.log(err); });
-}, 15000)
+}, 18000)
 /***********************************************
  ***************** Validate Chain  *************
  ***********************************************/
