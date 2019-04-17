@@ -23,86 +23,90 @@ The file __simpleChain.js__ in the root directory has all the code to be able to
 			i++;
 			if (i < 10) theLoop(i);
 		});
-	}, 10000);
+	}, 1000);
   })(0);
 ```
-This function will create 10 test blocks in the chain.
+The function above (theLoop) will create 10 test blocks in the chain.
 * Uncomment the function
 ```
-myBlockChain.getBlockChain().then((data) => {
-	console.log( data );
-})
-.catch((error) => {
-	console.log(error);
-})
-```
-This function print in the console the list of blocks in the blockchain
 * Uncomment the function
 ```
-myBlockChain.getBlock(0).then((block) => {
-	console.log(JSON.stringify(block));
-}).catch((err) => { console.log(err);});
+setTimeout(function () {
+  myBlockChain.getBlock(0).then((block) => {
+    console.log(block)
+  }).catch((err) => { console.log(err); });
+}, 1000)
 
 ```
 This function get from the Blockchain the block requested.
 * Uncomment the function
 ```
-myBlockChain.validateBlock(0).then((valid) => {
-	console.log(valid);
-})
-.catch((error) => {
-	console.log(error);
-})
+setTimeout(function () {
+  myBlockChain.validateBlock(0).then((valid) => {
+    console.log(valid);
+  })
+    .catch((error) => {
+      console.log(error);
+    })
+}, 1500)
 ```
 This function validate and show in the console if the block is valid or not, if you want to modify a block to test this function uncomment this code:
 ```
-myBlockChain.getBlock(5).then((block) => {
-	let blockAux = block;
-	blockAux.body = "Tampered Block";
-	myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
-		if(blockModified){
-			myBlockChain.validateBlock(blockAux.height).then((valid) => {
-				console.log(`Block #${blockAux.height}, is valid? = ${valid}`);
-			})
-			.catch((error) => {
-				console.log(error);
-			})
-		} else {
-			console.log("The Block wasn't modified");
-		}
-	}).catch((err) => { console.log(err);});
-}).catch((err) => { console.log(err);});
+setTimeout(function () {
+  myBlockChain.getBlock(5).then((block) => {
+    let blockAux = block;
+    blockAux.body = "Tampered Block";
+    myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
+      if (blockModified) {
+        myBlockChain.validateBlock(blockAux.height).then((valid) => {
+          console.log(`Block #${blockAux.height}, is valid? = ${valid}`);
+        })
+          .catch((error) => {
+            console.log(error);
+          })
+      } else {
+        console.log("The Block wasn't modified");
+      }
+    }).catch((err) => { console.log(err); });
+  }).catch((err) => { console.log(err); });
+}, 12000)
 
-myBlockChain.getBlock(6).then((block) => {
-	let blockAux = block;
-	blockAux.previousBlockHash = "jndininuud94j9i3j49dij9ijij39idj9oi";
-	myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
-		if(blockModified){
-			console.log("The Block was modified");
-		} else {
-			console.log("The Block wasn't modified");
-		}
-	}).catch((err) => { console.log(err);});
-}).catch((err) => { console.log(err);});
+setTimeout(function () {
+
+  myBlockChain.getBlock(6).then((block) => {
+    let blockAux = block;
+    blockAux.previousBlockHash = "jndininuud94j9i3j49dij9ijij39idj9oi";
+    myBlockChain._modifyBlock(blockAux.height, blockAux).then((blockModified) => {
+      if (blockModified) {
+        console.log("The Block was modified");
+      } else {
+        console.log("The Block wasn't modified");
+      }
+    }).catch((err) => { console.log(err); });
+  }).catch((err) => { console.log(err); });
+}, 15000)
 ```
 * Uncomment this function:
 ```
-myBlockChain.validateChain().then((errorLog) => {
-	if(errorLog.length > 0){
-		console.log("The chain is not valid:");
-		errorLog.forEach(error => {
-			console.log(error);
-		});
-	} else {
-		console.log("No errors found, The chain is Valid!");
-	}
-})
-.catch((error) => {
-	console.log(error);
-})
+setTimeout(function () {
+  myBlockChain.validateChain().then((errorLog) => {
+    if (errorLog.length > 0) {
+      console.log("The chain is not valid:");
+      errorLog.forEach(error => {
+        console.log(error);
+      });
+    } else {
+      console.log("No errors found, The chain is Valid!");
+    }
+  })
+    .catch((error) => {
+      console.log(error);
+    })
+}, 20000)
 ```
 
 This function validates the whole chain and return a list of errors found during the validation.
+setTimeout was used to ensure that the functions run in a particular order
 
 ## What do I learned with this Project
 

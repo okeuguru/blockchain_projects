@@ -47,7 +47,7 @@ setTimeout(function () {
   myBlockChain.getBlock(0).then((block) => {
     console.log(block)
   }).catch((err) => { console.log(err); });
-}, 1000)
+}, 800)
 
 /***********************************************
  ***************** Validate Block  *************
@@ -55,14 +55,13 @@ setTimeout(function () {
 
 
 // Be careful this only will work if `validateBlock` method in Blockchain.js file return a Promise
-setTimeout(function () {
-  myBlockChain.validateBlock(0).then((valid) => {
-    console.log(valid);
+
+myBlockChain.validateBlock(0).then((valid) => {
+  console.log(valid);
+})
+  .catch((error) => {
+    console.log(error);
   })
-    .catch((error) => {
-      console.log(error);
-    })
-}, 1500)
 
 
 /** Tampering a Block this is only for the purpose of testing the validation methods */
@@ -107,8 +106,6 @@ setTimeout(function () {
 
 // Be careful this only will work if `validateChain` method in Blockchain.js file return a Promise
 setTimeout(function () {
-
-
   myBlockChain.validateChain().then((errorLog) => {
     if (errorLog.length > 0) {
       console.log("The chain is not valid:");
