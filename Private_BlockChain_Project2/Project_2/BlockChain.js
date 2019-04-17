@@ -75,10 +75,10 @@ class Blockchain {
   async getBlock(height) {
     let self = this
     let self2 = this.bd;
-    let blockHeight
+    //let blockHeight
     let block
 
-    blockHeight = await self.getBlockHeight()
+    //blockHeight = await self.getBlockHeight()
     block = await self2.getLevelDBData(height)
     return block
   }
@@ -87,8 +87,9 @@ class Blockchain {
   async validateBlock(height) {
     let self = this;
     let validBlock
+    let validBlockHeight
 
-    // get block object
+    validBlockHeight = await self.getBlockHeight()
     validBlock = await self.getBlock(height)
 
     // get block hash
@@ -104,40 +105,47 @@ class Blockchain {
     if (blockHash === validBlockHash) {
       return true
     } else {
-      console.log('Block #' + blockHeight + ' invalid hash:\n' + blockHash + '<>' + validBlockHash);
+      console.log('Block #' + validBlock.height + ' invalid hash:\n' + blockHash + '<>' + validBlockHash);
       return false
     }
   }
 
   // Validate Blockchain
-  validateChain() {
-    let self = this;
-    return new Promise((resolve, reject) => {
-      let errorLog = [];
-      let chainLength
+  async validateChain() {
+    let self2 = this;
+    let errorLog = [];
+    let chainLength
+    let block
+    let validPrevBlock = ''
 
-      self.getBlockHeight().then((result) => {
-        chainLength = result
-        console.log(`This is cl ${chainLength}`)
+    self2.getBlockHeight().then((chainLength => {
+      console.log(`This is cl ${parseInt(chainLength) - 1}`)
+      return chainLength
+    }))
 
-        for (var i = 0; i < chainLength - 1; i++) {
-          // validate block
-          if (!this.validateBlock(i)) errorLog.push(i);
-          // compare blocks hash link
-          let blockHash = getBlock(i).hash;
-          let previousHash = getBlock(i + 1).previousBlockHash;
-          if (blockHash !== previousHash) {
-            errorLog.push(i);
-          }
-        }
-        if (errorLog.length > 0) {
-          console.log('Block errors = ' + errorLog.length);
-          console.log('Blocks: ' + errorLog);
-        } else {
-          console.log('No errors detected');
-        }
-      })
-    }).catch((err) => { console.log(err); reject(err) });
+    for (var i = 0; i < chainLength - 1; i++) {
+
+      //validPrevBlock = self2.getBlock(i)
+      block = self2.getBlock(i)
+      // validate block
+      if (!this.validateBlock(block.height)) errorLog.push(i);
+      // compare blocks hash link
+      let blockHash = block.hash;
+      console.log(`Block ${JSON.parse(JSON.stringify(block))}`)
+      console.log(`validPrevBlock ${JSON.parse(JSON.stringify(validPrevBlock))}`)
+      let previousHash = validPrevBlock.previousBlockHash;
+      if (blockHash !== previousHash) {
+        errorLog.push(i);
+      }
+      validPrevBlock = block.hash
+    }
+    if (errorLog.length > 0) {
+      console.log('Block errors = ' + errorLog.length);
+      console.log('Blocks: ' + errorLog);
+    } else {
+      console.log('No errors detected');
+    }
+    return errorLog
   }
 
   // Utility Method to Tamper a Block for Test Validation
