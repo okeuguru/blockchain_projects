@@ -82,12 +82,12 @@ class LevelSandbox {
   /**
    * Step 2. Implement the getBlocksCount() method
    */
-  async getBlocksCount() {
+  getBlocksCount() {
     let i = -1;
-    let self = this.db;
+    let self = this;
     // Add your code here
     return new Promise(function(resolve, reject) {
-      self
+      self.db
         .createReadStream()
         .on("data", function(data) {
           i++;
@@ -103,6 +103,33 @@ class LevelSandbox {
       reject(err);
     });
   }
+
+  // Get block by hash
+  getLevelDBDataByHash(hash) {
+    let self = this;
+    let block = null;
+    return new Promise(function(resolve, reject) {
+      self.db
+        .createReadStream()
+        .on("data", function(data) {
+          if (data.hash === hash) {
+            block = data;
+            console.log(`Level block ${JSON.stringify(block)}`);
+          }
+        })
+        .on("error", function(err) {
+          reject(err);
+        })
+        .on("close", function() {
+          console.log(`Level block ${block}`);
+          resolve(JSON.parse(block));
+        });
+    }).catch(err => {
+      console.log(err);
+      reject(err);
+    });
+  }
 }
+
 // Export the class
 module.exports.LevelSandbox = LevelSandbox;
