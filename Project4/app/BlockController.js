@@ -17,6 +17,34 @@ class BlockController {
     this.bc = new BlockChain.Blockchain();
     this.getBlockByIndex();
     this.postNewBlock();
+    this.getBlockByHash();
+  }
+
+  /**
+   * Implement a GET Endpoint to retrieve a block by index, url: "/api/block/:index"
+   */
+  getBlockByHash() {
+    let self = this.bc;
+    this.app.get("/stars/hash/:hash", (req, res) => {
+      // Get block function using getBlockHash(hash) from BlockChain.js
+      self
+        .getBlockHash(req.params.hash)
+        .then(block => {
+          block = block;
+          console.log(`API block ${block}`);
+          if (!block)
+            return res
+              .status(404)
+              .send("The block with the given hash was not found.");
+
+          res.send(block);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+
+      //console.log(`This is the req block ${JSON.stringify(block)}`)
+    });
   }
 
   /**
@@ -27,7 +55,7 @@ class BlockController {
     this.app.get("/block/:index", (req, res) => {
       // Get block function using getBlock(height) from BlockChain.js
       self
-        .getBlock(req.params.index)
+        .getBlockHash(req.params.index.toString())
         .then(block => {
           block = block;
           console.log(block);
@@ -45,6 +73,7 @@ class BlockController {
       //console.log(`This is the req block ${JSON.stringify(block)}`)
     });
   }
+
   /**
    * Implement a POST Endpoint to add a new Block, url: "/api/block"
    */
