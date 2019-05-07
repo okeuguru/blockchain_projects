@@ -86,11 +86,20 @@ class Blockchain {
   // Get Block By Height
   async getBlock(height) {
     let self2 = this.bd;
-    //let blockHeight
     let block;
 
-    //blockHeight = await self.getBlockHeight()
     block = await self2.getLevelDBData(height);
+    console.log(`GetBlock ${block}`);
+    return block;
+  }
+
+  // Get Block By Hash
+  async getBlockHash(hash) {
+    let self2 = this.bd;
+    let block;
+
+    block = await self2.getLevelDBDataByHash(hash);
+    console.log(`BC block ${block}`);
     return block;
   }
 
