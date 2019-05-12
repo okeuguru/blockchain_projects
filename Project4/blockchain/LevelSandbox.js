@@ -112,17 +112,42 @@ class LevelSandbox {
       self.db
         .createReadStream()
         .on("data", function(data) {
-          if (data.hash === hash) {
-            block = data;
-            console.log(`Level block ${JSON.stringify(block)}`);
+          if (JSON.parse(data.value).hash == hash) {
+            block = data.value;
           }
         })
         .on("error", function(err) {
           reject(err);
         })
         .on("close", function() {
-          console.log(`Level block ${block}`);
-          resolve(JSON.parse(block));
+          //console.log(`Level block ${block.value}`);
+          resolve(block);
+        });
+    }).catch(err => {
+      console.log(err);
+      reject(err);
+    });
+  }
+  // Get block by address
+  getLevelDBDataByAddress(address) {
+    let self = this;
+    let block = null;
+    let blockArray = [];
+    return new Promise(function(resolve, reject) {
+      self.db
+        .createReadStream()
+        .on("data", function(data) {
+          if (JSON.parse(data.value).body.address == address) {
+            block = data.value;
+            blockArray.push(block);
+          }
+        })
+        .on("error", function(err) {
+          reject(err);
+        })
+        .on("close", function() {
+          //console.log(blockArray);
+          resolve(blockArray);
         });
     }).catch(err => {
       console.log(err);
