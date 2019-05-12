@@ -29,15 +29,32 @@ class BlockController {
   async AddRequestValidation(obj) {
     let self = this;
     self.mempool = [];
-    let timeoutRequests = [];
+    self.timeoutRequests = [];
+
+    console.log(`MEMPOOL ${self.mempool} END`);
+
     for (let i of self.mempool) {
       if (i === obj) {
         console.log("Added object has already been submited");
-        console.log(`${timeRemaining}`);
-        console.log(obj);
       }
       let objAdd = await obj;
-      mempool.push(objAdd);
+
+      const TimeoutRequestsWindowTime = 5 * 60 * 1000;
+
+      let timeElapse =
+        new Date()
+          .getTime()
+          .toString()
+          .slice(0, -3) - objAdd.requestTimeStamp;
+      let timeLeft = TimeoutRequestsWindowTime / 1000 - timeElapse;
+      objAdd.validationWindow = timeLeft;
+
+      console.log(timeLeft);
+
+      self.timeoutRequests[objAdd.walletAddress] = setTimeout(function() {
+        self.removeValidationRequest(objAdd.walletAddress);
+      }, TimeoutRequestsWindowTime);
+      self.mempool.push(objAdd);
     }
   }
 
@@ -47,23 +64,24 @@ class BlockController {
 
   validateRequest() {
     let self = this;
-    let jsonRequest;
+
+    let request;
     self.app.post("/requestValidation/:address", (req, res) => {
-      jsonRequest = {
+      request = {
         walletAddress: req.params.address
       };
-      (jsonRequest.requestTimeStamp = new Date()
+      (request.requestTimeStamp = new Date()
         .getTime()
         .toString()
         .slice(0, -3)),
-        (jsonRequest.message = `${jsonRequest.walletAddress}:${
-          jsonRequest.requestTimeStamp
+        (request.message = `${request.walletAddress}:${
+          request.requestTimeStamp
         }:starRegistry`),
-        (jsonRequest.validationWindow = 300);
-      res.send(jsonRequest);
-      console.log(jsonRequest);
+        (request.validationWindow = 300);
+      res.send(request);
 
-      self.AddRequestValidation(jsonRequest);
+      self.AddRequestValidation(request);
+      //console.log(request);
     });
   }
 
