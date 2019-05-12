@@ -18,6 +18,94 @@ class BlockController {
     this.getBlockByIndex();
     this.postNewBlock();
     this.getBlockByHash();
+    this.getBlockByAddress();
+    this.validateRequest();
+  }
+
+  /**
+   * Add request to mempool validation
+   */
+
+  async AddRequestValidation(obj) {
+    let self = this;
+    self.mempool = [];
+    let timeoutRequests = [];
+    for (let i of self.mempool) {
+      if (i === obj) {
+        console.log("Added object has already been submited");
+        console.log(`${timeRemaining}`);
+        console.log(obj);
+      }
+      let objAdd = await obj;
+      mempool.push(objAdd);
+    }
+  }
+
+  /**
+   * Implement a POST endpoint to validate request with JSON response
+   */
+
+  validateRequest() {
+    let self = this;
+    let jsonRequest;
+    self.app.post("/requestValidation/:address", (req, res) => {
+      jsonRequest = {
+        walletAddress: req.params.address
+      };
+      (jsonRequest.requestTimeStamp = new Date()
+        .getTime()
+        .toString()
+        .slice(0, -3)),
+        (jsonRequest.message = `${jsonRequest.walletAddress}:${
+          jsonRequest.requestTimeStamp
+        }:starRegistry`),
+        (jsonRequest.validationWindow = 300);
+      res.send(jsonRequest);
+      console.log(jsonRequest);
+
+      self.AddRequestValidation(jsonRequest);
+    });
+  }
+
+  /**
+   * Implement a GET Endpoint to retrieve a block by index, url: "/api/block/:index"
+   */
+  getBlockByAddress() {
+    let self = this.bc;
+    let parsedArray = [];
+    this.app.get("/stars/address/:address", (req, res) => {
+      // Get block function using getBlockAddress(address) from BlockChain.js
+      // This returns an array
+      // The array will be parsed to decode stars in individual blocks
+      // parsed blocks will be pushed back into an array and sent to API
+      self
+        .getBlockAddress(req.params.address)
+        .then(blockArray => {
+          blockArray.map(block => {
+            // parse block
+            let parsedBlock = JSON.parse(block);
+
+            // decode star and add decoded star to the parsed block
+            parsedBlock.body.star["storyDecoded"] = new Buffer.from(
+              parsedBlock.body.star.story,
+              "hex"
+            ).toString();
+
+            // make sure block exists
+            if (!parsedBlock)
+              return res
+                .status(404)
+                .send("The block with the given hash was not found.");
+            parsedArray.push(parsedBlock);
+          });
+          res.send(parsedArray);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+
+      //console.log(`This is the req block ${JSON.stringify(block)}`)
+    });
   }
 
   /**
@@ -31,13 +119,23 @@ class BlockController {
         .getBlockHash(req.params.hash)
         .then(block => {
           block = block;
-          console.log(`API block ${block}`);
+
+          // parse block
+          let parsedBlock = JSON.parse(block);
+
+          // decode star and add decoded star to the parsed block
+          parsedBlock.body.star["storyDecoded"] = new Buffer.from(
+            parsedBlock.body.star.story,
+            "hex"
+          ).toString();
+
+          // make sure block exists
           if (!block)
             return res
               .status(404)
               .send("The block with the given hash was not found.");
 
-          res.send(block);
+          res.send(parsedBlock);
         })
         .catch(err => {
           console.log(err);
@@ -55,7 +153,7 @@ class BlockController {
     this.app.get("/block/:index", (req, res) => {
       // Get block function using getBlock(height) from BlockChain.js
       self
-        .getBlockHash(req.params.index.toString())
+        .getBlock(req.params.index.toString())
         .then(block => {
           block = block;
           console.log(block);
@@ -92,7 +190,7 @@ class BlockController {
           // Get body from post
           if (req.body.body) {
             block.body = {
-              address: req.body.address,
+              address: req.body.body.address,
               star: {
                 ra: req.body.body.star.ra,
                 dec: req.body.body.star.dec,
