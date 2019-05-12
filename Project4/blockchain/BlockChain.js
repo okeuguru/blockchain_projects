@@ -89,7 +89,6 @@ class Blockchain {
     let block;
 
     block = await self2.getLevelDBData(height);
-    console.log(`GetBlock ${block}`);
     return block;
   }
 
@@ -99,8 +98,18 @@ class Blockchain {
     let block;
 
     block = await self2.getLevelDBDataByHash(hash);
-    console.log(`BC block ${block}`);
+    //console.log(`BC block ${block}`);
     return block;
+  }
+
+  // Get Block By Address
+  async getBlockAddress(addressArray) {
+    let self2 = this.bd;
+    let blockArray;
+
+    blockArray = await self2.getLevelDBDataByAddress(addressArray);
+    //console.log(`BC block ${blockArray[0]}`);
+    return blockArray;
   }
 
   // Validate if Block is being tampered by Block Height
