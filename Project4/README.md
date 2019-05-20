@@ -1,6 +1,6 @@
-# Project #4. Connect Blockchain to Front-End Client with APIs
+# Project #4. Build a Private Blockchain Notary Service
 
-This is Project 3, Connect Blockchain to Front-End Client with APIs, in this project I created the classes to manage my private blockchain, to be able to persist my blochchain I used LevelDB. Data is loaded to LevelDB with simpleChain.js and app/BlockController.js is used to create the API end points and app/app.js is used to run the API
+In this project, you will build a Star Registry Service that allows users to claim ownership of their favorite star in the night sky.
 
 ## Node Framework
 
@@ -17,11 +17,27 @@ To setup the project for review do the following:
 
 ## BlockController.js
 
+- **validateSignature()**
+- Implements the POST endpoint used to validate a signed request object
+
+- **validateRequest()**
+- Implements the POST endpoint used to validate initial request object
+
+- **getBlockByAddress()**
+- Used to GET Star by Hash
+- The response includes entire star block contents along with the addition of star story decoded to ASCII.
+
+- **getBlockByHash()**
+- Used to GET Star by Address
+- The response includes entire star block contents along with the addition of star story
+  decoded to ASCII.
+- This endpoint response contained a list of Stars because of one wallet address can be used to register multiple Stars.
+
 - **getBlockByIndex()**
 - Implements the GET endpoint function used to retireve a block from LevelDB
 
 - **postNewBlock()**
-- Implements the POST endpoint function used to post a block to LevelDB
+- Web API POST endpoint with JSON response that submits the Star information to be saved in the Blockchain.
 
 ## app.js
 
