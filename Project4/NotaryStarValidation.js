@@ -15,13 +15,28 @@ class NotaryStarValidation {
   }
 
   isRequestValid(request) {
-    self.mempoolValid.find(req => {
-      if (req.walletAddress === request.walletAddress) {
-        return true;
+    let valid;
+    this.mempoolValid.find(req => {
+      if (req.status.address === request.status.address) {
+        valid = true;
       } else {
-        new Error("This is not a valid request");
+        return false;
       }
     });
+    return valid;
+  }
+
+  isBlockValid(block) {
+    let valid;
+    this.mempoolValid.find(req => {
+      console.log("blockValid", block);
+      if (req.registerStar === true) {
+        valid = true;
+      } else {
+        valid === false;
+      }
+    });
+    return valid;
   }
   async validateRequestByWallet(request) {
     let self = this;
@@ -57,6 +72,7 @@ class NotaryStarValidation {
                 }
               };
               self.mempoolValid.push(validResponse);
+              console.log("Valid Mempool", self.mempoolValid);
             }
             //return validResponse;
           }
