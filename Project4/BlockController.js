@@ -27,6 +27,7 @@ class BlockController {
 
   validateSignature() {
     let self = this;
+    let self2 = this.NotaryStarValidation;
 
     let request;
     self.app.post("/message-signature/validate/", async (req, res) => {
@@ -37,7 +38,11 @@ class BlockController {
 
       self.NotaryStarValidation.validateRequestByWallet(request).then(
         request => {
-          res.send(request);
+          if (self2.isRequestValid(request)) {
+            res.send(request);
+          } else {
+            res.send("is valid false");
+          }
         }
       );
     });
@@ -89,6 +94,7 @@ class BlockController {
 
   getBlockByAddress() {
     let self = this.bc;
+    let self2 = this.NotaryStarValidation;
     let parsedArray = [];
     this.app.get("/stars/address/:address", (req, res) => {
       // Get block function using getBlockAddress(address) from BlockChain.js
@@ -99,9 +105,11 @@ class BlockController {
         .getBlockAddress(req.params.address)
         .then(blockArray => {
           blockArray.map(block => {
-            if (isRequestValid(request)) {
+            let parsedBlock = JSON.parse(block);
+            //console.log(parsedBlock.body.address);
+            console.log("memValid", self2.mempoolValid);
+            if (block) {
               // parse block
-              let parsedBlock = JSON.parse(block);
 
               // decode star and add decoded star to the parsed block
               parsedBlock.body.star["storyDecoded"] = new Buffer.from(
@@ -180,7 +188,6 @@ class BlockController {
             block.body.star.story,
             "hex"
           ).toString();
-          console.log(block);
           if (!block)
             return res
               .status(404)
@@ -201,6 +208,7 @@ class BlockController {
    */
   postNewBlock() {
     let self = this.bc;
+    let self2 = this.NotaryStarValidation;
     this.app.post("/block", (req, res) => {
       let block = new Block();
 
@@ -237,13 +245,27 @@ class BlockController {
 
                 // Validate block before adding to chain
                 if (self.validateBlock(block.height)) {
-                  // Add block to chain
-                  self.addBlock(block);
+                  if (self2.isBlockValid(block)) {
+                    // Add block to chain
+                    self.addStarBlock(block);
 
-                  console.log(block.body);
+                    console.log(block);
 
-                  //send response
-                  res.send(block);
+                    //send response
+                    res.send(block);
+
+                    var validIndex = self2.mempoolValid.findIndex(
+                      x => x.status.address === block.body.address
+                    );
+                    self2.mempoolValid[validIndex].registerStar = false;
+                    console.log(
+                      "Expired validation: Cannot register star",
+                      self2.mempoolValid[validIndex]
+                    );
+                  } else {
+                    console.log("Validity used and expired");
+                    res.send("Validity used and expired");
+                  }
                 }
               })
               .catch(err => {
