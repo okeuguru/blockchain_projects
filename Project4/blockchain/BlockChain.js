@@ -55,6 +55,15 @@ class Blockchain {
   }
 
   // Add new block
+  async addStarBlock(block) {
+    let self2 = this.bd;
+    let block2Add;
+
+    block2Add = await self2.addDataToLevelDB(JSON.stringify(block));
+    return JSON.stringify(block2Add).toString();
+  }
+
+  // Add new block
   async addBlock(block) {
     let self = this;
     let self2 = this.bd;
