@@ -30,7 +30,10 @@ class NotaryStarValidation {
     let valid;
     this.mempoolValid.find(req => {
       console.log("blockValid", block);
-      if (req.registerStar === true) {
+      if (
+        req.registerStar === true &&
+        req.status.address === block.body.address
+      ) {
         valid = true;
       } else {
         valid === false;
