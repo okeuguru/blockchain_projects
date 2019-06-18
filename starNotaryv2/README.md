@@ -62,8 +62,8 @@ All 9 tests should pass
 
 ## Etherscan screen shot
 
-![Etherscan](Etherscan1.png?raw=true "https://rinkeby.etherscan.io")
+![Etherscan](Etherscan1.png?raw=true "Etherscan Image")
 
 ## Transaction screen shot
 
-![Transaction](transaction.png?raw=true "https://rinkeby.etherscan.io")
+![Transaction](transaction.png?raw=true "Transaction Details image")
