@@ -14,7 +14,7 @@ Project to develop a DApp and deploy to the Rinkeby network.
 ## Requirements
 
 - Truffle (https://www.trufflesuite.com/)
-- OpenZeppelin (https://www.npmjs.com/package/openzeppelin-solidity/v/2.0.1)
+- OpenZeppelin (https://www.npmjs.com/package/openzeppelin-solidity/v/2.3.0)
 - Node.js (https://nodejs.org/en/)
 - [Infura Account](https://infura.io/)
 - MetaMask (https://metamask.io/)
