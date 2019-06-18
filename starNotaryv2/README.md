@@ -2,7 +2,14 @@
 
 Project to develop a DApp and deploy to the Rinkeby network.
 
-Deployed Contract Address: 0xc6b121184eDDA700A0a2236d61EE477e97Bb295B
+## Project Details
+
+| #                                               | Detail                    | Value                                      |
+| ----------------------------------------------- | ------------------------- | ------------------------------------------ |
+| 1.                                              | Deployed Contract Address | 0xc6b121184eDDA700A0a2236d61EE477e97Bb295B |
+| 2. Your ERC-721 Token Name                      | Guru Star Token           |
+| 3. Your ERC-721 Token Symbol                    | NUO                       |
+| 4. Version of the Truffle and OpenZeppelin used | "2.3.0"                   |
 
 ## Requirements
 
@@ -66,4 +73,4 @@ All 9 tests should pass
 
 ## Transaction screen shot
 
-![Transaction](./transaction.png "Transaction Details image")
+![Transaction](./transaction.png?raw=true "Transaction Details image")
