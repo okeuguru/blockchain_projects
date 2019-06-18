@@ -1,9 +1,9 @@
 const HDWalletProvider = require("truffle-hdwallet-provider");
-const infuraKey = "a5fa30856b8d40fbb7326eac718226b5";
+const infuraKey = "<Infura PROJECT ID>";
 //
 // const fs = require('fs');
 const mnemonic =
-  "cat hybrid primary car later engage habit farm unknown cave worth all";
+  "<Metamask Seed>";
 
 module.exports = {
   networks: {
