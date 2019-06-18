@@ -36,7 +36,7 @@ Project to develop a DApp and deploy to the Rinkeby network.
    npm install openzeppelin-solidity
    ```
 
-3. Update configuration file (truffle.js) with infuraKey and mnemonic
+3. Update configuration file (truffle-config.js) with infuraKey and mnemonic
 
    ```
    infuraKey = "<Infura PROJECT ID>";
@@ -46,14 +46,18 @@ Project to develop a DApp and deploy to the Rinkeby network.
 
 4. From root folder, deploy StarNotary contract to network
    ```
-   truffle compile
+   truffle develop
+   compile
    truffle migrate --reset --network rinkeby
    ```
 5. Run Application
+   From a differenct cli, run the commands below.
+
    ```
    cd app
    npm run dev
    ```
+
 6. Go to http://localhost:8080/ to view application
 
 # Testing

@@ -36,7 +36,7 @@ const App = {
     const name = document.getElementById("starName").value;
     const id = document.getElementById("starId").value;
     await createStar(name, id).send({ from: this.account });
-    App.setStatus("New Star Owner is " + this.account + ".");
+    App.setStatus(`New Star Owner: ${this.account}`);
   },
 
   // Look up Star

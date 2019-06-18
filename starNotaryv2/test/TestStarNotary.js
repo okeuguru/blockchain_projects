@@ -77,7 +77,7 @@ it("lets user2 buy a star and decreases its balance in ether", async () => {
 // Implement Task 2 Add supporting unit tests
 
 it("can add the star name and star symbol properly", async () => {
-  let tokenId = 13;
+  let tokenId = 3;
   let instance = await StarNotary.deployed();
 
   // 1. create a Star with different tokenId
@@ -92,8 +92,8 @@ it("can add the star name and star symbol properly", async () => {
 });
 
 it("lets 2 users exchange stars", async () => {
-  let tokenId1 = 10;
-  let tokenId2 = 11;
+  let tokenId1 = 0;
+  let tokenId2 = 1;
   let instance = await StarNotary.deployed();
   let user1 = accounts[0];
   let user2 = accounts[1];
@@ -111,7 +111,7 @@ it("lets 2 users exchange stars", async () => {
 });
 
 it("lets a user transfer a star", async () => {
-  let tokenId = 12;
+  let tokenId = 3;
   let instance = await StarNotary.deployed();
   let toUser = accounts[1];
 
@@ -126,7 +126,7 @@ it("lets a user transfer a star", async () => {
 });
 
 it("lookUptokenIdToStarInfo test", async () => {
-  let tokenId = 15;
+  let tokenId = 5;
   let instance = await StarNotary.deployed();
 
   // 1. create a Star with different tokenId
